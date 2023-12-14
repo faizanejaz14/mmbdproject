@@ -1,0 +1,167 @@
+body {
+	/*display: flex;*/
+ background-image: url("lightbackground1.jpg");
+ background-attachment: fixed;
+ background-repeat: repeat-y;
+ background-size:cover ;
+ background-position: center;
+ position: relative;
+ //justify-content: center;
+ 
+}
+.firstpara{
+	color: green;
+	position: center;
+}
+.secondpara{
+	color: blue;
+}
+.ceme{
+	 position: absolute;
+      top: 0;
+      left: 0;
+      width: 40vh;
+      height: 45vh;
+	/*width: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;*/
+}
+
+.nust{
+	position: absolute;
+      top: 0;
+      right: 0;
+}
+h1, h2{
+      text-align: center; /* Center text horizontally */
+      }
+h3{
+	//justify-content: space-around;
+	//padding-left: 25vh;
+}
+.gps{
+	position: absolute;
+      left: 0;
+      font-size: 25px;
+      padding-left: 37vh;
+}
+.video{
+	position: absolute;
+      right: 0;
+      font-size: 25px;
+      padding-right: 37vh;
+}
+hr {
+  border: none;
+  height: 3px;
+  /* Set the hr color */
+  color: #333;  /* old IE */
+  background-color: #333;  /* Modern Browsers */
+}
+.embeddedvideo{
+	position: absolute;
+      right: 0;
+      /*font-size: 25px;*/
+      padding-right: 10vh;
+      padding-top: 8vh;
+}
+.simulation{
+	position: absolute;
+      right: 0;
+      font-size: 25px;
+      padding-right: 30vh;
+}
+.report{
+	position: absolute;
+      left: 0;
+      font-size: 25px;
+      padding-left: 30vh;
+}
+
+/**
+ * @license
+ * Copyright 2019 Google LLC. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/* 
+ * Always set the map height explicitly to define the size of the div element
+ * that contains the map. 
+ */
+
+#google_maps{
+  margin-top: 0px;
+  display: flex;
+  flex-direction: row;
+  height: 50%;
+  width: 100%;
+  padding-left: 10vh;
+}
+
+#map {
+  width: 40%;
+}
+
+#sidebar {
+  width: 40%;
+  overflow: auto;
+}
+
+html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+  
+.custom-map-control-button {
+  background-color: #fff;
+  border: 0;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+  margin: 10px;
+  padding: 0 0.5em;
+  font: 400 18px Roboto, Arial, sans-serif;
+  overflow: hidden;
+  height: 40px;
+  cursor: pointer;
+}
+
+.custom-map-control-button:hover {
+  background: rgb(235, 235, 235);
+}
+  
+#cords_container{
+  border: 2px black;
+  border-radius: 10px;
+  height: 50px;
+  width: 40%;
+  background-color: lightgreen;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 5px;
+}
+  
+#src_cords{
+  margin-left: inherit;
+  margin-right: inherit;
+  border: 2px black;
+  border-radius: 2px;
+  height: inherit;
+  width: 40%;
+  background-color: cyan;
+  
+} 
+  
+#dest_cords{
+  margin-left: inherit;
+  margin-right: inherit;
+  border-radius: 2px;
+  border: black;
+  height: inherit;
+  width: 40%;
+  background-color: aquamarine;
+}
