@@ -1,5 +1,5 @@
 let map, infoWindow, socket;
-const REMOTEIT_URL = 'tcp://proxy61.rt3.io:37334';
+const REMOTEIT_URL = 'tcp://proxy61.rt3.io:37338';
 
 async function initMap() {
   const { Map } = await google.maps.importLibrary("maps");
@@ -87,7 +87,7 @@ async function initMap() {
   });
 
   // WebSocket connection
-  socket = new WebSocket(REMOTEIT_URL.replace('tcp', 'ws'));
+  socket = new WebSocket(REMOTEIT_URL.replace('tcp', 'wss'));
   
   socket.onopen = () => {
     console.log('Connected to server');
