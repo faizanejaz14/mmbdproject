@@ -1,5 +1,5 @@
 let map, infoWindow, socket;
-const REMOTEIT_URL = 'tcp://proxy61.rt3.io:36072';
+const REMOTEIT_URL = 'tcp://proxy61.rt3.io:37334';
 
 async function initMap() {
   const { Map } = await google.maps.importLibrary("maps");
