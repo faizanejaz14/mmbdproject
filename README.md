@@ -1,4 +1,4 @@
-# Microprocesser & Microconroller based Design semester Project [Live Cloud Controlled Bot with Google Navigation aka tiny Google Cherrry-bot]
+# Microprocessor & Microconroller based Design semester Project [Live Cloud Controlled Bot with Google Navigation aka tiny Google Cherrry-bot]
 
 Features
 1) Live Cloud based camera stream
