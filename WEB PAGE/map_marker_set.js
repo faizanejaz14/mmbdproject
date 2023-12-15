@@ -155,6 +155,8 @@ async function initMap() {
     const currentCoordinates = JSON.parse(event.data);
     console.log('Received current coordinates:', currentCoordinates);
     src_marker = updateCurrentCoordinates(currentCoordinates);
+    src_cords.innerText = `Latitude: ${src_marker.position.lat.toPrecision(8)}
+    Longitude: ${src_marker.position.lng.toPrecision(8)}`;  
     calculateAndDisplayRoute(directionsService, directionsRenderer, src_marker.position, dest_marker.position)
   };
   
