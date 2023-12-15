@@ -1,4 +1,4 @@
-const REMOTEIT_URL = 'tcp://proxy61.rt3.io:36072';
+const REMOTEIT_URL = 'tcp://http://proxy60.rt3.io:37732';
 let socket;
 let map;
 
