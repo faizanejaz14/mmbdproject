@@ -1,15 +1,10 @@
-/*console.log('it works!!!');
-function welcome(){
-	window.open("https://www.youtube.com/shorts/E0rYbgDkvco");
-}*/
-
 // Note: This example requires that you consent to location sharing when
 // prompted by your browser. If you see the error "The Geolocation service
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
 
 //For loading markers: const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
-let map, infoWindow;
+let map, infoWindow, socket;
 const REMOTEIT_URL = 'tcp://proxy61.rt3.io:36072';
 //let staticMapURL = `https://maps.googleapis.com/maps/api/staticmap?size=400x400&maptype=roadmap&markers=color:blue%7Clabel:S%7C11211%7C11206%7C11222&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&signature=Intzeger`
 
@@ -206,6 +201,7 @@ function updateCurrentCoordinates(coordinates) {
 }
 
 function sendDestinationCoordinates(destination) {
+  console.log(destination)
   socket.send(JSON.stringify(destination));
 }
 

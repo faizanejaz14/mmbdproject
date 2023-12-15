@@ -1,20 +1,5 @@
 # Robotic Car Controller Project
 
-## Contributors
-
-- [Zakria Mehmood](https://github.com/ZakriaComputerEngineer):
-  - Implemented live camera streaming functionality
-  - Developed socket communication
-  - Configured and managed cloud services
-
-- [Faizan Ijaz](https://github.com/faizanejaz14):
-  - Integrated the web interface
-  - Collaborated on overall system integration
-
-- [Irtaza Hyder](https://github.com/SyedMIrtazaHyder):
-  - Worked on navigation functionality
-  - Configured Google Direction APIs for integration
-
 ## Overview
 This project involves controlling a 4-wheel robotic car using a Raspberry Pi 3 as its controller. The car is equipped with a USB webcam for live streaming and a NEO 6M GPS module to record its current coordinates. These modules are connected to the Raspberry Pi. The car transmits this data to a cloud server for further processing.
 
@@ -37,6 +22,21 @@ To use this project:
 1. Clone the repository.
 2. Set up the Raspberry Pi with the necessary modules and connections.
 3. Run the locally hosted website to control and monitor the car's movements.
+
+## Contributors
+
+- [Zakria Mehmood](https://github.com/ZakriaComputerEngineer):
+  - Implemented live camera streaming functionality
+  - Developed socket communication
+  - Configured and managed cloud services
+
+- [Faizan Ijaz](https://github.com/faizanejaz14):
+  - Integrated the web interface
+  - Collaborated on overall system integration
+
+- [Irtaza Hyder](https://github.com/SyedMIrtazaHyder):
+  - Worked on navigation functionality
+  - Configured Google Direction APIs for integration
 
 ## Contribution
 Contributions to enhance and improve this project are welcome. Fork the repository, make your changes, and create a pull request with details about your modifications.
