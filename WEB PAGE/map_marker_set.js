@@ -56,9 +56,7 @@ async function initMap() {
   const carImg = document.createElement("img");
 
   //where to take img from
-  carImg.src ="\
-  https://th.bing.com/th/id/R.8b01377204f7e5e60f3928fa9c6d8d8d?rik=veNTNapnhdPf5A&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fpng-hd-images-of-cars-volkswagen-png-hd-1500.png&ehk=bzMQ1ueAXMsJzhilqNehN77R9uwSPUm8hoyg%2bCU3wYo%3d&risl=&pid=ImgRaw&r=0\
-  "
+  carImg.src ="car.png"
   //Image size can be changed via these params
   carImg.height = 30;
   carImg.width = 30;

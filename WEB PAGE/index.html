@@ -10,7 +10,6 @@
 	<script src="style.js"></script>
 	<title>Geolocation</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    
     <script type="module" src="./map_marker_set.js"></script>
     <link rel="icon" type="image/x-icon" href="map-regular.svg">
 
@@ -66,67 +65,32 @@
 <br>
 <hr>
 <br>
-	<table>
-	<tr>
-	<td class="video">video streaming</td>
-	<td class="gps">GPS navigation</td>
-	</tr>
-	<tr>
-		
-		<td>
-			<br>
-			<br>
-			<iframe class="embeddedvideo" width="600" height="350" src="https://sflix.to/watch-movie/free-oppenheimer-hd-98446.9759013" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-		</td>
-	</tr>
-	</table>
-<br>
-<br>
-<br>
-<!--<div>
-<iframe width="560" height="315" src="https://sflix.to/watch-movie/free-oppenheimer-hd-98446.9759013" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-</div>
--->
-
-	<div id="google_maps">
-      <div id="map"></div>
-      <div id="sidebar"></div>  
-    </div>
-    <div id = "cords_container">
-      <label id="src_cords" name="src_cords">Hi there</label>
-      <label id="dest_cords" name="dest_cords">Hello</label>
-    </div>
-    <!-- 
-      The `defer` attribute causes the callback to execute after the full HTML
-      document has been parsed. For non-blocking uses, avoiding race conditions,
-      and consistent behavior across browsers, consider loading using Promises.
-      See https://developers.google.com/maps/documentation/javascript/load-maps-js-api
-      for more information.
-      -->
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&callback=initMap&v=weekly"
-      defer
-    ></script>
+<section class="display_screen">
+	<h3 class="gps">GPS Navigation</h3>
+	<h3 class="video">Video Streaming</h3>
+	<section class="video_tab">
+		<iframe class="embeddedvideo" width="600" height="350" src="https://sflix.to/watch-movie/free-oppenheimer-hd-98446.9759013" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+	</section>
+	<!--<div>
+		<iframe width="560" height="315" src="https://sflix.to/watch-movie/free-oppenheimer-hd-98446.9759013" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+	</div>
+	-->
+	<section class="maps_tab">
+		<div id="google_maps">
+			<div id="map"></div>
+			<div id="sidebar"></div>  
+		</div>
+		<div id = "cords_container">
+			<label id="src_cords" name="src_cords">Hi there</label>
+			<label id="dest_cords" name="dest_cords">Hello</label>
+		</div>
+		<script
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&callback=initMap&v=weekly"
+		defer></script>
+	</section>
+</section>
 <h3 class="manualcontrol">Manual Controls</h3>
     <!-- <script
     src = "https://maps.googleapis.com/maps/api/staticmap?center=40.714728,-73.998672&format=gif&zoom=14&size=400x400&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0"
     ></script> -->
 </body>
-
-
-
-<!--<!doctype html>
-
- @license
- Copyright 2019 Google LLC. All Rights Reserved.
- SPDX-License-Identifier: Apache-2.0
-
-<html>
-  <head>
-    
-  </head>
-  <body>
-    
-  </body>
-</html>
--->
