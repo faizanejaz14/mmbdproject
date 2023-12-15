@@ -1,16 +1,12 @@
-/*console.log('it works!!!');
-function welcome(){
-	window.open("https://www.youtube.com/shorts/E0rYbgDkvco");
-}*/
-
 // Note: This example requires that you consent to location sharing when
 // prompted by your browser. If you see the error "The Geolocation service
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
 
 //For loading markers: const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
-let map, infoWindow;
-//let staticMapURL = `https://maps.googleapis.com/maps/api/staticmap?size=400x400&maptype=roadmap&markers=color:blue%7Clabel:S%7C11211%7C11206%7C11222&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&signature=Intzeger`
+let map, infoWindow, socket;
+const REMOTEIT_URL = 'tcp://proxy61.rt3.io:36072';
+//let staticMapURL = https://maps.googleapis.com/maps/api/staticmap?size=400x400&maptype=roadmap&markers=color:blue%7Clabel:S%7C11211%7C11206%7C11222&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&signature=Intzeger
 
 async function initMap() {
   //setting an initial point on the map
@@ -37,7 +33,7 @@ async function initMap() {
   map.addListener('mapcapabilities_changed', () => {
     const mapCapabilities = map.getMapCapabilities();
     if (!mapCapabilities.isAdvancedMarkersAvailable) {
-      // Advanced markers are *not* available, add a fallback.
+      // Advanced markers are not available, add a fallback.
       console.log("Incompatible with map capability changes");
     }
   });
@@ -56,19 +52,24 @@ async function initMap() {
   const carImg = document.createElement("img");
 
   //where to take img from
-  carImg.src ="\
-  https://th.bing.com/th/id/R.8b01377204f7e5e60f3928fa9c6d8d8d?rik=veNTNapnhdPf5A&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fpng-hd-images-of-cars-volkswagen-png-hd-1500.png&ehk=bzMQ1ueAXMsJzhilqNehN77R9uwSPUm8hoyg%2bCU3wYo%3d&risl=&pid=ImgRaw&r=0\
-  "
+  carImg.src ="car.png"
   //Image size can be changed via these params
   carImg.height = 30;
   carImg.width = 30;
 
   //Initializing a  marker
-  const src_marker = new AdvancedMarkerElement({
+  let src_marker = new AdvancedMarkerElement({
     map,
     position: { lat: 33.621955642487734, lng: 72.95814350678089 },
-    content: carImg,//pinBackground.element,
+    content: carImg,
   });
+
+  let dest_marker = new AdvancedMarkerElement({
+    map,
+    position: { lat: 33.621955642487734, lng: 72.95814350678089 },//saves desintation value, but initially null
+    content: pinBackground.element,//pinBackground.element,
+  });
+
 
   const locationButton = document.createElement("button");
   src_cords.innerText = `Latitude: ${src_marker.position.lat.toPrecision(8)}
@@ -84,7 +85,7 @@ async function initMap() {
   //Clicking on Map
   // Configure the click listener.
   map.addListener("click", (mapsMouseEvent) => {  
-    const dest_marker = new AdvancedMarkerElement({
+    dest_marker = new AdvancedMarkerElement({
       map,
       position: { lat: mapsMouseEvent.latLng.lat(), lng: mapsMouseEvent.latLng.lng() },//saves desintation value, but initially null
       content: pinBackground.element,//pinBackground.element,
@@ -112,6 +113,9 @@ async function initMap() {
     
     var direction_table = document.getElementsByClassName("adp-directions")[0]
     console.log(direction_table)
+    //Sending the current destination to server
+    sendDestinationCoordinates({"latitude": dest_marker.position.lat.toPrecision(8),
+                                "longitude": dest_marker.position.lng.toPrecision(8)})
   });
 
   //Clicking on config button
@@ -140,8 +144,24 @@ async function initMap() {
     }
   });
 
-  //Setting path A to B
+  //tcp connection
+  socket = new WebSocket(REMOTEIT_URL.replace('tcp', 'ws'));
 
+  socket.onopen = () => {
+   console.log('Connected to server');
+  };
+  
+  socket.onmessage = (event) => {
+    const currentCoordinates = JSON.parse(event.data);
+    console.log('Received current coordinates:', currentCoordinates);
+    src_marker = updateCurrentCoordinates(currentCoordinates);
+    calculateAndDisplayRoute(directionsService, directionsRenderer, src_marker.position, dest_marker.position)
+  };
+  
+  socket.onclose = (event) => {
+    console.log('Connection closed:', event);
+  };
+  
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer, srcLatLng, destLatLng) {
@@ -167,36 +187,22 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.open(map);
 }
 
-function downloadJSONFile(url, filename) {
-  fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok.');
-      }
-      return response.json();
-    })
-    .then(data => {
-      const jsonContent = JSON.stringify(data, null, 2);
-      const blob = new Blob([jsonContent], { type: 'application/json' });
+function updateCurrentCoordinates(coordinates) {
+  // Update your UI with the received coordinates
+  const srcCordsLabel = document.getElementById('src_cords');
+  srcCordsLabel.innerText = `Latitude: ${coordinates.latitude.toPrecision(8)}
+  Longitude: ${coordinates.longitude.toPrecision(8)}`;
+  const src_marker = new AdvancedMarkerElement({
+    map,
+    position: { lat: coordinates.latitude, lng: coordinates.longitude },
+    content: carImg,
+  });
+  return src_marker;
+}
 
-      // Create a link element
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = filename || 'data.json';
-
-      // Append the link to the body
-      document.body.appendChild(link);
-
-      // Programmatically click the link to trigger the download
-      link.click();
-
-      // Clean up: remove the link and revoke the object URL
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(link.href);
-    })
-    .catch(error => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
+function sendDestinationCoordinates(destination) {
+  console.log(destination)
+  socket.send(JSON.stringify(destination));
 }
 
 window.initMap = initMap;
