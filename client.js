@@ -1,9 +1,14 @@
-const REMOTEIT_URL = 'tcp://http://proxy60.rt3.io:37732';
+const REMOTEIT_URL = 'tcp://proxy61.rt3.io:36072';
 let socket;
 let map;
 
 function initMap() {
   // Your existing initMap code goes here...
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: 33.621955642487734, lng: 72.95814350678089 },
+    zoom: 18,
+    mapId: 'a9053d1e13164e6b',
+  });
 
   // Connect to the server using the provided remoteit URL
   socket = new WebSocket(REMOTEIT_URL.replace('tcp', 'ws'));
