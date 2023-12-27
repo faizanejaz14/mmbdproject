@@ -4,7 +4,7 @@
 // locate you.
 
 //For loading markers: const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
-let map, infoWindow, socket;
+let map, infoWindow, socket, table;
 const REMOTEIT_URL = 'tcp://proxy61.rt3.io:36072';
 //let staticMapURL = `https://maps.googleapis.com/maps/api/staticmap?size=400x400&maptype=roadmap&markers=color:blue%7Clabel:S%7C11211%7C11206%7C11222&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&signature=Intzeger`
 
@@ -110,14 +110,53 @@ async function initMap() {
     const control = document.getElementById("floating-panel");
   
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
-    
-    var direction_table = document.getElementsByClassName("adp-directions")[0]
-    console.log(direction_table)
+  
     //Sending the current destination to server
     sendDestinationCoordinates({"latitude": dest_marker.position.lat.toPrecision(8),
                                 "longitude": dest_marker.position.lng.toPrecision(8)})
   });
 
+  //Getting directions to move
+  //sends repeated data but is manageable, will use the latest data received
+  const observer = new MutationObserver(mutationsList => {
+    for (let mutation of mutationsList) {
+      if (mutation.type === 'childList' && mutation.target === document.getElementById("sidebar")) {
+        // The innerHTML has changed, so read the new content
+        let liste = [];
+        table = document.getElementsByClassName("adp-directions")[0]
+
+        for (var r = 0, n = table.rows.length; r < n; r++) {
+          for (var c = 2, m = table.rows[r].cells.length; c < m; c+=3) {
+              //getting direction
+              //const boldWords = Array.from(table.rows[r].cells[c].innerHTML).map(bold => bold.textContent)
+              const boldContentRegex = /<b>(.*?)<\/b>/i;
+              // Extract content within the <b> tags using match and filter
+              const extractedBoldContent = table.rows[r].cells[c].innerHTML.match(boldContentRegex);
+              //Getting distance
+              const distanceRegex = /\b(\d+(\.\d+)?) (km|m)\b/g;
+              // Extract numbers and units using match and filter
+              const extractedDistances = table.rows[r].cells[c+1].innerHTML.match(distanceRegex);
+
+              liste.push(extractedBoldContent[1] + "," + extractedDistances);
+          }
+        }
+        console.log(liste) //SEND TO SOCKET
+        // Perform actions with the updated content here
+      }
+    }
+  });
+
+  // Configuration for the observer
+  const observerConfig = {
+    attributes: false,
+    childList: true,
+    subtree: true
+  };
+  
+  // Start observing the changes in the content element
+  observer.observe(document.getElementById("sidebar"), observerConfig);
+
+  
   //Clicking on config button
   locationButton.addEventListener("click", () => {
     // Try HTML5 geolocation.
