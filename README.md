@@ -41,6 +41,11 @@ To use this project:
 ## Contribution
 Contributions to enhance and improve this project are welcome. Fork the repository, make your changes, and create a pull request with details about your modifications.
 
+## TODO
+- Break JS file into smaller related scripts
+- Web Socket for sending and receiving data from cloud services (Webhost --> RX => GPS, TX => Directions)
+- Decrypt JS file on Pi to start moving.
+
 ## References
 - NEO 6M with Raspberry Pi: GPS: https://sparklers-the-makers.github.io/blog/robotics/use-neo-6m-module-with-raspberry-pi/
 - Raspberry Pi 3: https://www.raspberrypi.com/documentation/computers/raspberry-pi.html

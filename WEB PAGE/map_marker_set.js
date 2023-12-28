@@ -66,7 +66,7 @@ async function initMap() {
 
   let dest_marker = new AdvancedMarkerElement({
     map,
-    position: { lat: 33.621955642487734, lng: 72.95814350678089 },//saves desintation value, but initially null
+    position: { lat: 33.621955642487734, lng: 72.95814350678089 },//saves destination value, but initially null
     content: pinBackground.element,//pinBackground.element,
   });
 
@@ -84,7 +84,8 @@ async function initMap() {
 
   //Clicking on Map
   // Configure the click listener.
-  map.addListener("click", (mapsMouseEvent) => {  
+  map.addListener("click", (mapsMouseEvent) => {
+    //Updating destination marker when click on map.
     dest_marker = new AdvancedMarkerElement({
       map,
       position: { lat: mapsMouseEvent.latLng.lat(), lng: mapsMouseEvent.latLng.lng() },//saves desintation value, but initially null
@@ -93,8 +94,8 @@ async function initMap() {
 
     dest_cords.innerText = `Latitude: ${dest_marker.position.lat.toPrecision(8)}
     Longitude: ${dest_marker.position.lng.toPrecision(8)}`;
+    //Computing shortest path to new destination.
     calculateAndDisplayRoute(directionsService, directionsRenderer, src_marker.position, dest_marker.position);
-    //We also need to generate a static map which we will take as image to navigate in
     
     //opening URL to get the encoded polyline points
     // const json_polyline_overview = "https://maps.googleapis.com/maps/api/directions/json?origin=" + src_marker.position.lat + ",%20" + src_marker.position.lng + 
@@ -104,11 +105,9 @@ async function initMap() {
     // //end goal: https://maps.googleapis.com/maps/api/staticmap?size=200x200&path=enc:wxelEish|LH`BXtEB?&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0
 
     // //Getting data from JSON
-    // downloadJSONFile(json_polyline_overview, "google_directions.json");
+    //Setting sidebar to display directions
     directionsRenderer.setPanel(document.getElementById("sidebar"));
-
     const control = document.getElementById("floating-panel");
-  
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
   
     //Sending the current destination to server
@@ -137,11 +136,10 @@ async function initMap() {
               // Extract numbers and units using match and filter
               const extractedDistances = table.rows[r].cells[c+1].innerHTML.match(distanceRegex);
 
-              liste.push(extractedBoldContent[1] + "," + extractedDistances);
+              liste.push(extractedBoldContent[1] + "," + extractedDistances); //Can be viewed as queued data
           }
         }
         console.log(liste) //SEND TO SOCKET
-        // Perform actions with the updated content here
       }
     }
   });
