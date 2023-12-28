@@ -4,10 +4,10 @@ import time
 import json
 import serial
 import pynmea2
+import os
 
 Current = ""
 Destination = ""
-
 
 def send_data(client_socket, client_address):
     try:
@@ -28,13 +28,15 @@ def GPS_reading():
     ser = serial.Serial(port, baudrate=9600, timeout=0.5)
     dataout = pynmea2.NMEAStreamReader()
     # converting byte string into string
-    newdata = ser.readline().decode("windows-1252")
+    newdata = ser.readline().decode("utf-8", errors="ignore")
     if newdata[0:6] == "$GPRMC":
         newmsg = pynmea2.parse(newdata)
         lat = newmsg.latitude
         lng = newmsg.longitude
         Current = str(round(lat, 6)) + "," + str(round(lng, 6))
-
+    #Temp to send data
+    else:
+        Current = "0000, 0000"
 
 def recieve_data(client_socket, client_address):
     try:
