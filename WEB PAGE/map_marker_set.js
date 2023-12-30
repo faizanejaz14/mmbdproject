@@ -7,44 +7,6 @@
 let map, infoWindow, socket, table;
 const REMOTEIT_URL = 'tcp://proxy61.rt3.io:32554';
 //let staticMapURL = `https://maps.googleapis.com/maps/api/staticmap?size=400x400&maptype=roadmap&markers=color:blue%7Clabel:S%7C11211%7C11206%7C11222&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&signature=Intzeger`
-let previousString = "";
-
-async function updateCurrentCoordinates() {
-  const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
-  const filePath = '../GPS_Data.txt'; // Replace with the path to your file
-  const carImg = document.createElement("img");
-
-  //where to take img from
-  //Image size can be changed via these params
-  carImg.height = 30;
-  carImg.width = 30;
-  carImg.src = "car.png";
-
-  console.log("Here");
-  fetch(filePath)
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          return response.text();
-      })
-      .then(data => {
-          console.log("Got GPS Data");
-          // Update the HTML element with the fetched content
-          document.getElementById('dest_cords').innerText = data;
-          let coordinates = data.split(',').map(value => parseFloat(value.trim()));//list having first element as lat, second as long
-          console.log(coordinates)
-          const src_marker = new AdvancedMarkerElement({
-            map,
-            position: { lat: coordinates[0], lng: coordinates[1]},
-            content: carImg,
-          });
-          return src_marker;
-      })
-      .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-      });
-}
 
 async function initMap() {
   //setting an initial point on the map
@@ -178,7 +140,22 @@ async function initMap() {
           }
         }
         console.log(directions_data) //SEND TO SOCKET
-        writeDirectionToFile(directions_data)
+        fetch('http://localhost:4050/data', { //python server to fetch from
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(directions_data),
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Response from Python:', data);
+          // Process the response from Python as needed
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+
       }
     }
   });
@@ -284,24 +261,7 @@ function sendDestinationCoordinates(destination) {
   //writeDirectionToFile(destination);
 }
 
-function writeDirectionToFile(newString) {
-  // Check if the new string is different from the previous one
-  if (newString !== previousString) {
-      const fileContent = new Blob([newString], { type: 'text/plain' });
-
-      // Create a new File object
-      const file = new File([fileContent], 'direction.txt', { type: 'text/plain' });
-
-      // Save the file using the FileSaver.js library (needs to be included in the HTML)
-      saveAs(file, '../direction.txt');
-
-      // Update the previousString variable
-      previousString = newString;
-  }
-}
-
 window.initMap = initMap;
-setInterval(updateCurrentCoordinates, 1000);
 
 //https://th.bing.com/th/id/R.990b116b8856614c043d7aa70efff5be?rik=r%2fPnJO4xnpTLwA&riu=http%3a%2f%2fwww.clker.com%2fcliparts%2fh%2f7%2fU%2fU%2fm%2fo%2fgreen-flag-hi.png&ehk=pwvlDIRSQTwOve4cd0q5m4geh4jLJp2Usbe%2bWkxgDEw%3d&risl=&pid=ImgRaw&r=0
 /*"https://maps.googleapis.com/maps/api/staticmap?size=1000x1000\
