@@ -1,25 +1,59 @@
-import socket
-import threading
-import time
-import json
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 import serial
 import pynmea2
-import os
+import re
+import mpu_driver as driver
 
-Current = ""
-Destination = ""
+# Making a Flask server to communicate with JS
+app = Flask(__name__)
+CORS(app)  # , resources={r"/data": {"origins": "http://127.0.0.1:5501"}})
 
-def send_data(client_socket, client_address):
-    try:
-        while True:
-            GPS_reading()
-            client_socket.sendall(json.dumps(Current).encode())
-            time.sleep(5)
-    except (socket.error, KeyboardInterrupt):
-        print(f"Connection with {client_address} closed")
-    finally:
-        client_socket.close()
-#   function end
+
+def parse_direction(direction):
+    match = re.match(
+        r'(east|west|north|south|left|right),\s*([\d.]+)\s*(km|m)', direction, re.I)
+    if match:
+        action = match.group(1).lower()
+        value = float(match.group(2))
+        unit = match.group(3).lower() if match.group(3) else 'm'
+        # Convert distance to meters if the unit is in kilometers
+        if unit == 'km':
+            value *= 1000
+        return action, value
+    else:
+        raise ValueError("Invalid direction format: {}".format(direction))
+
+
+@app.route('/data', methods=['POST'])
+def receive_data_from_JS():
+    global Directions
+    direction_val = request.json
+    if direction_val != "" or direction_val != Directions:
+        Directions = direction_val
+        parts = Directions.split('\n')
+        for i in parts:
+            if i == "":
+                continue
+            action, value = parse_direction(i)
+            print(action, " = ", value)
+            driver.run_driver(action, value)
+
+        response_data = {"message": Directions}
+        return jsonify(response_data)
+# function end
+
+
+@app.route('/sendDataToJS', methods=['GET'])
+def send_data_to_JS():
+    GPS_reading()
+    if Current is None:
+        data = ""
+    else:
+        data = Current
+    # Data to send from Python to JavaScript
+    return jsonify(data)
+# function end
 
 
 def GPS_reading():
@@ -34,49 +68,16 @@ def GPS_reading():
         lat = newmsg.latitude
         lng = newmsg.longitude
         Current = str(round(lat, 6)) + "," + str(round(lng, 6))
-    #Temp to send data
+    # Temp to send data
     else:
         Current = "0000, 0000"
-
-def recieve_data(client_socket, client_address):
-    try:
-        while True:
-            data = client_socket.recv(1024)
-            if not data:
-                print(f"Connection with {client_address} closed")
-                break
-            global Destination
-            if Destination != data.decode():
-                Destination = data.decode()
-                print(f"Destination changed: {Destination}")
-            print(f"Destination unchanged: {Destination}")
-    except (socket.error, KeyboardInterrupt):
-        print(f"Connection with {client_address} closed")
-    finally:
-        client_socket.close()
-#   function end
+# function end
 
 
 def main():
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(('0.0.0.0', 5001))
-    server_socket.listen()
-    print("Server listening on port 5001")
-
-    try:
-        client_socket, client_address = server_socket.accept()
-        client_thread1 = threading.Thread(
-            target=send_data, args=(client_socket, client_address))
-        client_thread2 = threading.Thread(
-            target=recieve_data, args=(client_socket, client_address))
-        client_thread1.start()
-        client_thread2.start()
-        client_thread1.join()
-        client_thread2.join()
-    except KeyboardInterrupt:
-        print("Server interrupted by user")
-    finally:
-        server_socket.close()
+    driver.calibrate_timer()
+    # Running Flask Server
+    app.run(host='0.0.0.0', port='5000', debug=False)
 
 
 if __name__ == "__main__":

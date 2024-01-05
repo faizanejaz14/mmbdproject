@@ -5,8 +5,9 @@
 
 //For loading markers: const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 let map, infoWindow, socket, table;
-const REMOTEIT_URL = 'tcp://proxy61.rt3.io:32554';
-//let staticMapURL = `https://maps.googleapis.com/maps/api/staticmap?size=400x400&maptype=roadmap&markers=color:blue%7Clabel:S%7C11211%7C11206%7C11222&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&signature=Intzeger`
+//let staticMapURL = https://maps.googleapis.com/maps/api/staticmap?size=400x400&maptype=roadmap&markers=color:blue%7Clabel:S%7C11211%7C11206%7C11222&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&signature=Intzeger
+
+let url = "http://proxy60.rt3.io:36943"
 
 async function initMap() {
   //setting an initial point on the map
@@ -33,7 +34,7 @@ async function initMap() {
   map.addListener('mapcapabilities_changed', () => {
     const mapCapabilities = map.getMapCapabilities();
     if (!mapCapabilities.isAdvancedMarkersAvailable) {
-      // Advanced markers are *not* available, add a fallback.
+      // Advanced markers are not available, add a fallback.
       console.log("Incompatible with map capability changes");
     }
   });
@@ -69,7 +70,6 @@ async function initMap() {
     position: { lat: 33.621955642487734, lng: 72.95814350678089 },//saves destination value, but initially null
     content: pinBackground.element,//pinBackground.element,
   });
-
 
   const locationButton = document.createElement("button");
   src_cords.innerText = `Latitude: ${src_marker.position.lat.toPrecision(8)}
@@ -111,8 +111,6 @@ async function initMap() {
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
   
     //Sending the current destination to server
-    sendDestinationCoordinates({"latitude": dest_marker.position.lat.toPrecision(8),
-                                "longitude": dest_marker.position.lng.toPrecision(8)})
   });
 
   //Getting directions to move
@@ -140,7 +138,7 @@ async function initMap() {
           }
         }
         console.log(directions_data) //SEND TO SOCKET
-        fetch('http://localhost:4050/data', { //python server to fetch from
+        fetch(url + '/data', { //python server to fetch from
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -197,26 +195,9 @@ async function initMap() {
     }
   });
 
-  //tcp connection
-  socket = new WebSocket(REMOTEIT_URL.replace('tcp', 'wss'));//was ws before
-
-  socket.onopen = () => {
-   console.log('Connected to server');
-  };
-  
-  // socket.onmessage = (event) => {
-  //   const currentCoordinates = JSON.parse(event.data);
-  //   console.log('Received current coordinates:', currentCoordinates);
-  //   //src_marker = updateCurrentCoordinates(AdvancedMarkerElement, carImg);
-  //   src_cords.innerText = `Latitude: ${src_marker.position.lat.toPrecision(8)}
-  //   Longitude: ${src_marker.position.lng.toPrecision(8)}`;
-  //   calculateAndDisplayRoute(directionsService, directionsRenderer, src_marker.position, dest_marker.position)
-  // };
-  
-  socket.onclose = (event) => {
-    console.log('Connection closed:', event);
-  };
-  
+  setInterval(() => {
+    fetchDataFromPython(src_marker);
+  }, 5000);
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer, srcLatLng, destLatLng) {
@@ -261,8 +242,60 @@ function sendDestinationCoordinates(destination) {
   //writeDirectionToFile(destination);
 }
 
-window.initMap = initMap;
 
+async function fetchDataFromPython(src_marker) {  
+  fetch("http://127.0.0.1:5000/sendDataToJS")
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    const coords = data.split(',');
+    const src_cords = document.getElementById('src_cords');
+    const slat = parseFloat(coords[0]); const slng = parseFloat(coords[1]);
+    if (slat == 0 || slng == 0){
+      return;
+    }
+    src_cords.innerText = `Latitude {slat}\nLongitude: {slng}`;
+
+    //displaying marker
+    //Initializing a  marker
+    // src_marker = new AdvancedMarkerElement({
+    //   map,
+    //   position: { lat: slat, lng: slng},//saves desintation value, but initially null
+    //   content: carImg,//pinBackground.element,
+    // });
+
+    src_marker.position = new google.maps.LatLng(slat, slng);
+    console.log(src_marker.position);
+    // Process the received data from Python as needed
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+//calling both async functions in parallel
+// async function runInParallel(){
+//   try{
+//     const { Map } = await google.maps.importLibrary("maps");
+//     map = new Map(document.getElementById("map"), {
+//       //EME Barber Shop Location: 33.621955642487734, 72.95814350678089
+//       center: { lat: 33.621955642487734, lng: 72.95814350678089 },//need to get this cords from raspberry pi
+//       zoom: 18,
+//       //for getting map with desired features only
+//       mapId: "a9053d1e13164e6b",
+//     });
+  
+//     //const result = await Promise.all([initMap, fetchDataFromPython()])
+//     window.initMap = initMap;
+//     //initMap();
+//     fetchDataFromPython();
+//   }
+//   catch{
+//     console.error('Error: ', error);
+//   }
+// }
+window.initMap = initMap;
+// Call the function to fetch data from Python
 //https://th.bing.com/th/id/R.990b116b8856614c043d7aa70efff5be?rik=r%2fPnJO4xnpTLwA&riu=http%3a%2f%2fwww.clker.com%2fcliparts%2fh%2f7%2fU%2fU%2fm%2fo%2fgreen-flag-hi.png&ehk=pwvlDIRSQTwOve4cd0q5m4geh4jLJp2Usbe%2bWkxgDEw%3d&risl=&pid=ImgRaw&r=0
 /*"https://maps.googleapis.com/maps/api/staticmap?size=1000x1000\
 &markers=size:small%7Ccolor:blue%7Clabel:S%7C" + src_marker.position.lat + ", " + src_marker.position.lng + 
