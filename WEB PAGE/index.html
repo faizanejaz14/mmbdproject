@@ -11,6 +11,7 @@
 	<title>Geolocation</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="module" src="./map_marker_set.js"></script>
 
 </head>
@@ -19,37 +20,30 @@
 	<label></label>
 	<img class="ceme" src="CEME-Logo.png">
 	<img class="nust" src="NUST-Logo.svg">
-	<h1 align="center">DEPARTMENT OF COMPUTER & SOFTWARE ENGINEERING</h1>
+	<h1 align="center">DEPARTMENT OF Mechanical ENGINEERING</h1>
 <h1>COLLEGE OF E&ME, NUST, RAWALPINDI</h1>
 <br>
 	<br>
-	<h1 align="center">Microprocessor and Microcontroller Based Design</h1>
-	<br>
-	<br>
-	<h2>Project :  Autonomous Robotic Car with Live Video Streaming</h2>
+	<h2>Project : Cloud Based Autonomous Robotic Car</h2>
 	<br>
 	<h2>Group Members:</h2>
 	<br>	
 	<table border="2" cellspacing="0" cellpadding="10" align="center">
 		<tr>
 			<th>Name</th>
-			<th>CMS</th>
 			<th>DE/Dept</th>
 		</tr>
 		<tr>
-			<td>Faizan Ejaz</td>
-			<td>384102</td>
-			<td>43, CE(A)</td>
+			<td>Muhammad Zakria Mehmood</td>
+			<td>CE</td>
 		</tr>
 		<tr>
-			<td>Irtaza Hyder</td>
-			<td>378514</td>
-			<td>43, CE(A)</td>
+			<td>Muneeb Ahmad</td>
+			<td>MTS</td>
 		</tr>
 		<tr>
-			<td>Zakriya Mehmood</td>
-			<td>391449</td>
-			<td>43, CE(A)</td>
+			<td>Syed M. Irtaza Hyder</td>
+			<td>CE</td>
 		</tr>
 	</table>
 <br>
@@ -85,11 +79,38 @@
 			<label id="dest_cords" name="dest_cords">Hello</label>
 		</div>
 		<script
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&callback=initMap&v=weekly"
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQNRImowyz4NNCjcamAi4jThwFJO1zZLg&callback=initMap&v=weekly"
 		defer></script>
 	</section>
 </section>
 <h3 class="manualcontrol">Manual Controls</h3>
+	<section class="arrows">
+		<button class="up-button" id="up-button"></button>
+		<button class="down-button" id="down-button"></button>
+		<button class="left-button" id="left-button"></button>
+		<button class="right-button" id="right-button"></button>
+	</section> 
+	<script>
+		document.addEventListener("keydown", function(event) {
+			switch (event.key) {
+				case "ArrowLeft":
+					console.log("Left arrow key pressed");
+					break;
+				case "ArrowRight":
+					console.log("Right arrow key pressed");
+					break;
+				case "ArrowUp":
+					console.log("Up arrow key pressed");
+					break;
+				case "ArrowDown":
+					console.log("Down arrow key pressed");
+					break;
+				default:
+					console.log("Invalid Key press !?!?");
+			}
+		});
+	</script>
+	<script type="module" src="./ArrowKey.js"></script>
     <!-- <script
     src = "https://maps.googleapis.com/maps/api/staticmap?center=40.714728,-73.998672&format=gif&zoom=14&size=400x400&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0"
     ></script> -->

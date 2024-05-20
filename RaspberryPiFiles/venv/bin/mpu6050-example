@@ -1,0 +1,4 @@
+#!"/home/Zuck/Desktop/Scripts/MBD Project/venv/bin/python"
+# EASY-INSTALL-SCRIPT: 'mpu6050-raspberrypi==1.2','mpu6050-example'
+__requires__ = 'mpu6050-raspberrypi==1.2'
+__import__('pkg_resources').run_script('mpu6050-raspberrypi==1.2', 'mpu6050-example')

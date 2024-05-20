@@ -7,7 +7,7 @@
 let map, infoWindow, socket, table;
 //let staticMapURL = https://maps.googleapis.com/maps/api/staticmap?size=400x400&maptype=roadmap&markers=color:blue%7Clabel:S%7C11211%7C11206%7C11222&key=AIzaSyCCB7UocJCGGZO4BxsxQ24TCtTNJTujGN0&signature=Intzeger
 
-let url = "http://proxy60.rt3.io:36943"
+let url = ""
 
 async function initMap() {
   //setting an initial point on the map
