@@ -6,7 +6,7 @@ body {
  background-size:cover ;
  background-position: center;
  position: relative;
- //justify-content: center;
+ /*justify-content: center;*/
  
 }
 .firstpara{
@@ -34,25 +34,53 @@ body {
       top: 0;
       right: 0;
 }
-h1, h2{
+h1, h2, h3{
       text-align: center; /* Center text horizontally */
       }
-h3{
-	//justify-content: space-around;
-	//padding-left: 25vh;
-}
-.gps{
-	position: absolute;
-      left: 0;
-      font-size: 25px;
-      padding-left: 37vh;
-}
-.video{
-	position: absolute;
+/*h3{
+	justify-content: space-around;
+	padding-left: 25vh;
+}*/
+
+/*Links*/
+.simulation{
+  position: absolute;
       right: 0;
       font-size: 25px;
-      padding-right: 37vh;
+      padding-right: 30vh;
 }
+.report{
+  position: absolute;
+      left: 0;
+      font-size: 25px;
+      padding-left: 30vh;
+}
+
+/*Display Objects*/
+.display_screen{
+  height: 500px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 5fr;
+  /*overflow: scroll;*/
+}
+
+/*Headings*/
+.gps{
+  left: 0;
+  font-size: 25px;
+  padding-left: 37vh;
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+.video{
+  right: 0;
+  font-size: 25px;
+  padding-right: 37vh;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
 hr {
   border: none;
   height: 3px;
@@ -60,61 +88,42 @@ hr {
   color: #333;  /* old IE */
   background-color: #333;  /* Modern Browsers */
 }
-.embeddedvideo{
-	position: absolute;
-      right: 0;
-      /*font-size: 25px;*/
-      padding-right: 10vh;
-      padding-top: 8vh;
-}
-.simulation{
-	position: absolute;
-      right: 0;
-      font-size: 25px;
-      padding-right: 30vh;
-}
-.report{
-	position: absolute;
-      left: 0;
-      font-size: 25px;
-      padding-left: 30vh;
+
+
+/*Video Display*/
+.video_tab{
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  padding-left: 10px;
+  height: auto;
 }
 
-/**
- * @license
- * Copyright 2019 Google LLC. All Rights Reserved.
- * SPDX-License-Identifier: Apache-2.0
- */
-/* 
- * Always set the map height explicitly to define the size of the div element
- * that contains the map. 
- */
+.embeddedvideo{
+  height: 100%;
+  width: 100%;
+}
+
+/*Maps CSS*/
 
 #google_maps{
-  margin-top: 0px;
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
   display: flex;
   flex-direction: row;
-  height: 50%;
+  height: 80%;
+  max-height: 350px;
   width: 100%;
-  padding-left: 10vh;
 }
 
 #map {
-  width: 40%;
+  width: 65%;
 }
 
 #sidebar {
-  width: 40%;
-  overflow: auto;
+  width: 35%;
+  overflow: scroll;
 }
 
-html,
-  body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-  
 .custom-map-control-button {
   background-color: #fff;
   border: 0;
@@ -136,7 +145,7 @@ html,
   border: 2px black;
   border-radius: 10px;
   height: 50px;
-  width: 40%;
+  width: 100%;
   background-color: lightgreen;
   margin-top: 10px;
   display: flex;
@@ -164,4 +173,51 @@ html,
   height: inherit;
   width: 40%;
   background-color: aquamarine;
+}
+
+.arrows{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three equal columns */
+  grid-template-rows: repeat(3, 1fr); /* Three equal rows */
+  gap: 10px; /* Adjust the gap between items */
+  align-self: center;
+  align-content: center;
+  /* Add any other styling as needed */
+}
+
+.up-button, .left-button, .right-button, .down-button{
+    background: url('icons8-scroll-up-30.png') no-repeat;
+    width: 150px;
+    height: 150px;
+    border: none;
+    cursor: pointer;
+    grid-row: 1;
+    grid-column: 2;
+}
+
+.up-button:hover, .left-button:hover, .right-button:hover, .down-button:hover{
+  background-color: rgba(0, 0, 0, 0.2); /* Transparent black overlay */
+}
+
+.up-button:active, .left-button:active, .right-button:active, .down-button:active{
+  filter: invert(50%);
+}
+
+
+.right-button{
+  transform: rotate(90deg);
+  grid-row: 2;
+  grid-column: 3;
+}
+
+.down-button{
+  transform: rotate(180deg);
+  grid-row: 3;
+  grid-column: 2;
+}
+
+.left-button{
+  transform: rotate(270deg);
+  grid-row: 2;
+  grid-column: 1;
 }
