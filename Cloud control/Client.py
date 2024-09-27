@@ -1,59 +1,64 @@
-import socket
-import threading
-import json
-import random
 import time
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import re
+import random
 
-REMOTEIT_URL = 'tcp://proxy61.rt3.io:36072'
+app = Flask(__name__)
+CORS(app)  # , resources={r"/data": {"origins": "http://127.0.0.1:5501"}})
+
 Current = ""
-Destination = 0.0
+Directions = ""
 
 
-def send_data(client_socket):
-    try:
-        while True:
-            try:
-                global Destination
-                Destination = round(random.uniform(0.0, 100.0), 6)
-                time.sleep(10)
-                client_socket.sendall(json.dumps(Destination).encode())
-            except ValueError:
-                print("Invalid input")
-    except KeyboardInterrupt:
-        print("Client interrupted by user")
-    finally:
-        client_socket.close()
+def parse_direction(direction):
+    match = re.match(
+        r'(east|west|north|south|left|right|U-turn),\s*([\d.]+)\s*(km|m)', direction, re.I)
+    if match:
+        action = match.group(1).lower()
+        value = float(match.group(2))
+        unit = match.group(3).lower() if match.group(3) else 'm'
+        if unit == 'km':
+            value *= 1000
+        return action, value
+    else:
+        raise ValueError("Invalid direction format: {}".format(direction))
 
 
-def receive_data(client_socket):
-    try:
-        while True:
-            data = client_socket.recv(1024)
-            if not data:
-                break
-            global Current
-            Current = data.decode()
-            print(f"Current: {Current}")
-    except KeyboardInterrupt:
-        print("Client interrupted by user")
-    finally:
-        client_socket.close()
+def drive_motors():
+    print()
+
+
+@app.route('/data', methods=['POST'])
+def receive_data_from_JS():
+    global Directions
+    direction_val = request.json
+    if direction_val != "" or direction_val != Directions:
+        Directions = direction_val
+        parts = Directions.split('\n')
+        for i in parts:
+            if i == "":
+                continue
+            action, value = parse_direction(i)
+            print(action, " = ", value)
+
+
+        response_data = {"message": Directions}
+        return jsonify(response_data)
+
+
+@app.route('/sendDataToJS', methods=['GET'])
+def send_data_to_JS():
+    Current = [round(random.uniform(79, 80), 6),
+            round(random.uniform(79, 80), 6)]
+    time.sleep(1.5)
+    response_data = {"message": f'Latitude: {Current[0]}\nLongitude: {Current[1]}'}
+    print(response_data)
+    return jsonify(response_data)
 
 
 def main():
-    parts = REMOTEIT_URL.split(':')
-    host = parts[1][2:]
-    port = int(parts[2])
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((host, port))
-
-    client_thread1 = threading.Thread(target=send_data, args=(client_socket,))
-    client_thread2 = threading.Thread(
-        target=receive_data, args=(client_socket,))
-    client_thread1.start()
-    client_thread2.start()
-    client_thread1.join()
-    client_thread2.join()
+    app.run(host='0.0.0.0', port='5000', debug=False)
 
 
 if __name__ == "__main__":
